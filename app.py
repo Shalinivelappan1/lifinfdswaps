@@ -92,6 +92,7 @@ menu = st.sidebar.radio("Choose Module", [
     "CDS Payoff Simulator",
     "CDS vs Bond Spread",
     "Credit Event Simulator",
+    "Sovereign CDS Monitor",
 
     # Treasury
     "Treasury Desk Simulator",
@@ -1729,6 +1730,243 @@ CDS became globally important during:
 - Banking Stress Episodes
 
 """)
+# =========================================================
+# CDS SPREAD CALCULATOR
+# =========================================================
+
+elif menu == "CDS Spread Calculator":
+
+    st.header("📈 CDS Spread Calculator")
+
+    notional = st.number_input(
+        "Bond Notional",
+        value=10000000.0,
+        key="cds_calc_notional"
+    )
+
+    annual_premium = st.number_input(
+        "Annual CDS Premium",
+        value=250000.0,
+        key="cds_calc_premium"
+    )
+
+    cds_spread = (
+        annual_premium / notional
+    ) * 10000
+
+    st.metric(
+        "CDS Spread (bps)",
+        round(cds_spread, 2)
+    )
+
+    if cds_spread < 100:
+
+        st.success("Low Credit Risk")
+
+    elif cds_spread < 300:
+
+        st.warning("Moderate Credit Risk")
+
+    else:
+
+        st.error("High Credit Risk")    
+# =========================================================
+# CDS PAYOFF SIMULATOR
+# =========================================================
+
+elif menu == "CDS Payoff Simulator":
+
+    st.header("💰 CDS Payoff Simulator")
+
+    notional = st.number_input(
+        "CDS Notional",
+        value=10000000.0,
+        key="cds_payoff_notional"
+    )
+
+    recovery = st.slider(
+        "Recovery Rate (%)",
+        0,
+        100,
+        40,
+        key="cds_payoff_recovery"
+    )
+
+    default = st.checkbox(
+        "Trigger Credit Event?"
+    )
+
+    if default:
+
+        payoff = (
+            notional *
+            (1 - recovery/100)
+        )
+
+    else:
+
+        payoff = 0
+
+    st.metric(
+        "CDS Protection Payment",
+        currency(payoff)
+    )
+# =========================================================
+# CDS VS BOND SPREAD
+# =========================================================
+
+elif menu == "CDS vs Bond Spread":
+
+    st.header("⚖️ CDS vs Bond Spread")
+
+    bond_yield = st.number_input(
+        "Corporate Bond Yield (%)",
+        value=9.0,
+        key="bond_yield"
+    )
+
+    govt_yield = st.number_input(
+        "Government Bond Yield (%)",
+        value=7.0,
+        key="govt_yield"
+    )
+
+    cds_spread = st.number_input(
+        "CDS Spread (bps)",
+        value=180.0,
+        key="bond_cds_spread"
+    )
+
+    bond_spread = (
+        bond_yield - govt_yield
+    ) * 100
+
+    col1, col2 = st.columns(2)
+
+    col1.metric(
+        "Bond Spread (bps)",
+        round(bond_spread, 2)
+    )
+
+    col2.metric(
+        "CDS Spread (bps)",
+        cds_spread
+    )
+
+    spread_difference = cds_spread - bond_spread
+
+    st.metric(
+        "Basis Difference",
+        round(spread_difference, 2)
+    )
+# =========================================================
+# CREDIT EVENT SIMULATOR
+# =========================================================
+
+elif menu == "Credit Event Simulator":
+
+    st.header("⚠️ Credit Event Simulator")
+
+    entity = st.text_input(
+        "Reference Entity",
+        value="XYZ Corp"
+    )
+
+    event = st.selectbox(
+
+        "Credit Event",
+
+        [
+
+            "Bankruptcy",
+            "Failure to Pay",
+            "Debt Restructuring",
+            "Sovereign Default"
+
+        ]
+    )
+
+    notional = st.number_input(
+        "CDS Notional",
+        value=10000000.0,
+        key="credit_event_notional"
+    )
+
+    recovery = st.slider(
+        "Recovery Rate (%)",
+        0,
+        100,
+        35,
+        key="credit_event_recovery"
+    )
+
+    payout = (
+        notional *
+        (1 - recovery/100)
+    )
+
+    st.error(f"""
+Credit Event Triggered:
+{event}
+""")
+
+    st.metric(
+        "Protection Payment",
+        currency(payout)
+    )
+# =========================================================
+# SOVEREIGN CDS MONITOR
+# =========================================================
+
+elif menu == "Sovereign CDS Monitor":
+
+    st.header("🌍 Sovereign CDS Monitor")
+
+    sovereign_df = pd.DataFrame({
+
+        "Country": [
+
+            "USA",
+            "India",
+            "Brazil",
+            "Turkey",
+            "Argentina"
+
+        ],
+
+        "CDS Spread (bps)": [
+
+            35,
+            85,
+            220,
+            410,
+            1200
+
+        ]
+
+    })
+
+    st.dataframe(
+        sovereign_df,
+        use_container_width=True
+    )
+
+    fig = px.bar(
+
+        sovereign_df,
+
+        x="Country",
+
+        y="CDS Spread (bps)",
+
+        title="Sovereign CDS Risk"
+
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 # =========================================================
 # TREASURY DESK SIMULATOR
