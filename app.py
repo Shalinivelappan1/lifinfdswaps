@@ -86,6 +86,13 @@ menu = st.sidebar.radio("Choose Module", [
     "Advanced CVA",
     "XVA Overview",
 
+     # CDS
+    "Credit Default Swaps",
+    "CDS Spread Calculator",
+    "CDS Payoff Simulator",
+    "CDS vs Bond Spread",
+    "Credit Event Simulator",
+
     # Treasury
     "Treasury Desk Simulator",
     "Treasury Roleplay",
@@ -1467,6 +1474,261 @@ elif menu == "CVA Basics":
         "Estimated CVA",
         currency(cva)
     )
+# =========================================================
+# CREDIT DEFAULT SWAPS (CDS)
+# =========================================================
+
+elif menu == "Credit Default Swaps":
+
+    st.header("💳 Credit Default Swaps (CDS)")
+
+    st.markdown("""
+
+## What is a Credit Default Swap?
+
+A CDS is a credit derivative contract.
+
+It acts like insurance against:
+- bond default
+- loan default
+- sovereign default
+
+---
+
+## Parties in CDS
+
+### Protection Buyer
+- pays CDS premium
+- receives compensation if default occurs
+
+### Protection Seller
+- receives premium
+- compensates buyer during credit event
+
+---
+
+## Common Credit Events
+
+- Bankruptcy
+- Failure to Pay
+- Debt Restructuring
+- Sovereign Default
+
+---
+
+## Applications
+
+✅ Credit risk hedging  
+✅ Speculation on credit quality  
+✅ Bond spread trading  
+✅ Counterparty risk management  
+✅ Basel risk management
+
+""")
+
+    # =====================================================
+    # INPUTS
+    # =====================================================
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        notional = st.number_input(
+            "CDS Notional",
+            value=10000000.0,
+            key="cds_notional"
+        )
+
+        cds_spread = st.number_input(
+            "CDS Spread (bps)",
+            value=150.0,
+            key="cds_spread"
+        )
+
+        maturity = st.number_input(
+            "Maturity (Years)",
+            value=5,
+            key="cds_maturity"
+        )
+
+    with col2:
+
+        recovery_rate = st.slider(
+            "Recovery Rate (%)",
+            0,
+            100,
+            40,
+            key="cds_recovery"
+        )
+
+        default_probability = st.number_input(
+            "Default Probability (%)",
+            value=3.0,
+            key="cds_pd"
+        )
+
+    # =====================================================
+    # CALCULATIONS
+    # =====================================================
+
+    annual_premium = (
+        notional *
+        cds_spread / 10000
+    )
+
+    total_premium = (
+        annual_premium *
+        maturity
+    )
+
+    loss_given_default = (
+        1 - recovery_rate/100
+    )
+
+    protection_payment = (
+        notional *
+        loss_given_default
+    )
+
+    expected_loss = (
+        notional *
+        default_probability/100 *
+        loss_given_default
+    )
+
+    # =====================================================
+    # OUTPUT METRICS
+    # =====================================================
+
+    st.subheader("📊 CDS Analytics")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric(
+        "Annual CDS Premium",
+        currency(annual_premium)
+    )
+
+    col2.metric(
+        "Protection Payment",
+        currency(protection_payment)
+    )
+
+    col3.metric(
+        "Expected Credit Loss",
+        currency(expected_loss)
+    )
+
+    st.metric(
+        "Total Premium Over Maturity",
+        currency(total_premium)
+    )
+
+    # =====================================================
+    # CDS CASH FLOW TABLE
+    # =====================================================
+
+    premium_schedule = []
+
+    for year in range(1, maturity+1):
+
+        premium_schedule.append({
+
+            "Year": year,
+            "Annual Premium": annual_premium
+
+        })
+
+    cds_df = pd.DataFrame(
+        premium_schedule
+    )
+
+    st.subheader("📄 Premium Payment Schedule")
+
+    st.dataframe(
+        cds_df,
+        use_container_width=True
+    )
+
+    # =====================================================
+    # CDS VISUALIZATION
+    # =====================================================
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=cds_df["Year"],
+        y=cds_df["Annual Premium"],
+        name="CDS Premium"
+    ))
+
+    fig.update_layout(
+        title="CDS Premium Payments Through Time",
+        xaxis_title="Year",
+        yaxis_title="Premium Payment"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    # =====================================================
+    # INTERPRETATION
+    # =====================================================
+
+    st.subheader("🧠 Interpretation")
+
+    if cds_spread < 100:
+
+        st.success("""
+Low CDS spread indicates relatively low perceived credit risk.
+""")
+
+    elif cds_spread < 300:
+
+        st.warning("""
+Moderate CDS spread indicates elevated credit risk.
+""")
+
+    else:
+
+        st.error("""
+High CDS spread indicates severe market concern regarding default risk.
+""")
+
+    # =====================================================
+    # EDUCATIONAL NOTES
+    # =====================================================
+
+    st.markdown("""
+
+---
+
+## CDS Spread Interpretation
+
+| CDS Spread | Credit Quality |
+|---|---|
+| <100 bps | Strong Credit |
+| 100–300 bps | Moderate Risk |
+| >300 bps | Distressed Credit |
+
+---
+
+## Important Insight
+
+Higher CDS spreads imply:
+- higher default probability
+- worsening market perception
+- increasing borrowing costs
+
+CDS became globally important during:
+- 2008 Financial Crisis
+- Sovereign Debt Crises
+- Banking Stress Episodes
+
+""")
 
 # =========================================================
 # TREASURY DESK SIMULATOR
