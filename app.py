@@ -56,19 +56,84 @@ This lab covers:
 
 menu = st.sidebar.radio("Choose Module", [
 
+    # Basics
     "Introduction to Swaps",
-
     "Interest Rate Swaps",
-
     "Currency Swaps",
-
     "Commodity Swaps",
-
     "Equity Swaps",
-
     "Comparative Advantage",
+    "Swap Cash Flow Simulator",
 
-    "Swap Cash Flow Simulator"
+    # Valuation
+    "Swap Pricing & Valuation",
+    "Advanced Swap Valuation",
+    "Swap Curve & Yield Curve",
+    "Yield Curve Bootstrapping",
+    "Mark-to-Market",
+    "DV01 & Duration Analysis",
+    "Interest Rate Sensitivity",
+    "Stress Testing",
+    "Scenario Analysis",
+
+    # Risk
+    "Counterparty Risk",
+    "Exposure Profile",
+    "Collateral Simulation",
+    "CSA Logic",
+    "Central Clearing",
+    "CVA Basics",
+    "Advanced CVA",
+    "XVA Overview",
+
+    # Treasury
+    "Treasury Desk Simulator",
+    "Treasury Roleplay",
+    "Hedge Recommendation Engine",
+    "Multi-Risk Treasury Dashboard",
+    "ALM Simulator",
+    "Treasury War Room",
+    "Live Strategy Engine",
+
+    # Indian Market
+    "MIFOR Swaps",
+    "Indian Swaps Market",
+    "OIS Swaps",
+    "Benchmark Transition",
+
+    # Learning
+    "Swap Timeline Visualizer",
+    "Swaps vs Futures vs Forwards",
+    "Case-Based Learning",
+    "Step-by-Step Solver",
+    "Quiz Engine",
+    "Formula Cheat Sheet",
+    "Common Student Mistakes",
+
+    # Advanced
+    "Swaptions",
+    "Swaption Payoff Visualizer",
+    "Monte Carlo Rate Simulation",
+    "Portfolio Swap Analytics",
+    "Hedge Effectiveness",
+    "Hedge Accounting",
+
+    # Institutional
+    "Gamified Learning",
+    "Faculty Mode",
+    "Executive Education Mode",
+    "Treasury Scorecard",
+    "Capstone Simulation",
+    "Learning Progress Tracker",
+    "Badge System",
+    "Interactive Timeline Engine",
+    "Swap Dashboard",
+    "Swap Market Simulator",
+
+    # Output
+    "Report Generator",
+    "Certificate Generator",
+    "Finance UI Enhancements"
 
 ])
 
@@ -453,7 +518,7 @@ elif menu == "Swap Cash Flow Simulator":
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    # =========================================================
+# =========================================================
 # SWAP PRICING & VALUATION
 # =========================================================
 
@@ -1102,7 +1167,7 @@ elif menu == "Scenario Analysis":
         fig,
         use_container_width=True
     )
-    # =========================================================
+# =========================================================
 # COUNTERPARTY RISK
 # =========================================================
 
@@ -1800,7 +1865,7 @@ elif menu == "Swaps vs Futures vs Forwards":
     })
 
     st.table(comparison_df)
-    # =========================================================
+# =========================================================
 # CASE-BASED LEARNING
 # =========================================================
 
